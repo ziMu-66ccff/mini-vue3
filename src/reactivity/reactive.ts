@@ -1,5 +1,5 @@
 import { isArray, isObject, hasChanged } from '../utils/index';
-import { track, trigger } from './effect';
+import { effect, track, trigger } from './effect';
 
 const reactiveMap = new WeakMap();
 
@@ -21,7 +21,7 @@ export function reactive(target: any) {
 			const res = Reflect.set(target, key, newValue);
 			if (hasChanged(oldValue, newValue)) {
 				trigger(target, key);
-				if (isArray(target) && oldLength != Reflect.get(target, 'length')) {
+				if (isArray(target) && oldLength != Reflect.get(target, 'length') && key !== 'length') {
 					trigger(target, 'length');
 				}
 			}
@@ -33,6 +33,16 @@ export function reactive(target: any) {
 	return reactiveProxy;
 }
 
-function isReactive(target: any) {
+export function isReactive(target: any) {
 	return !!(target && target.__isReactive);
 }
+
+const arr = reactive([0, 1, 2]);
+effect(() => {
+	console.log(arr[3], 'a');
+});
+effect(() => {
+	console.log(arr.length, 'b');
+});
+
+arr.push(3);
