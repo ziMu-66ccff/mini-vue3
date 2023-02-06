@@ -2,7 +2,7 @@ import { isFunction } from '../utils/index';
 import { effect, track, trigger } from './effect';
 import type { EffectFn } from './effect';
 
-type computedOptions = { getter: () => any; setter: (newValue?: any) => void; (): any };
+type computedOptions = { getter: () => any; setter: (newValue?: any) => void } | (() => any);
 
 export function computed(computedOptions: computedOptions) {
 	let getter: () => any;

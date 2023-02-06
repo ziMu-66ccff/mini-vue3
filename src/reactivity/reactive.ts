@@ -8,16 +8,16 @@ export function reactive(target: any) {
 	if (isReactive(target)) return target;
 	if (reactiveMap.has(target)) return reactiveMap.get(target);
 
-	const reactiveProxy: {} | any[] = new Proxy(target, {
-		get(target, key): {} | any[] {
+	const reactiveProxy: Record<string | number | symbol, any> = new Proxy(target, {
+		get(target, key) {
 			if (key === 'isReactive') return true;
 			track(target, key);
-			const res = target[key];
+			const res = Reflect.get(target, key);
 			return isObject(res) ? reactive(res) : res;
 		},
 		set(target, key, newValue) {
-			const oldValue = target[key];
-			const oldLength = target.length;
+			const oldValue = Reflect.get(target, key);
+			const oldLength = Reflect.get(target, 'length');
 			const res = Reflect.set(target, key, newValue);
 			if (hasChanged(oldValue, newValue)) {
 				trigger(target, key);
