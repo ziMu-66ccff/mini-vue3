@@ -1,20 +1,20 @@
-export function isObject(value: any) {
+export function isObject(value: any): value is {} {
 	return typeof value === 'object' && value !== null;
 }
 
-export function isFunction(value: any) {
+export function isFunction(value: any): value is () => any {
 	return typeof value === 'function';
 }
 
-export function isArray(value: any) {
+export function isArray(value: any): value is any[] {
 	return Array.isArray(value);
 }
 
-export function isString(value: any) {
+export function isString(value: any): value is string {
 	return typeof value === 'string';
 }
 
-export function isNumber(value: any) {
+export function isNumber(value: any): value is number {
 	return typeof value === 'number';
 }
 

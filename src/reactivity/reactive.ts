@@ -8,12 +8,12 @@ export function reactive(target: any) {
 	if (isReactive(target)) return target;
 	if (reactiveMap.has(target)) return reactiveMap.get(target);
 
-	const reactiveProxy = new Proxy(target, {
-		get(target, key) {
+	const reactiveProxy: {} | any[] = new Proxy(target, {
+		get(target, key): {} | any[] {
 			if (key === 'isReactive') return true;
 			track(target, key);
 			const res = target[key];
-			return res;
+			return isObject(res) ? reactive(res) : res;
 		},
 		set(target, key, newValue) {
 			const oldValue = target[key];
