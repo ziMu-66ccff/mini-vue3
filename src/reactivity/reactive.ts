@@ -36,13 +36,3 @@ export function reactive(target: any) {
 export function isReactive(target: any) {
 	return !!(target && target.__isReactive);
 }
-
-const arr = reactive([0, 1, 2]);
-effect(() => {
-	console.log(arr[3], 'a');
-});
-effect(() => {
-	console.log(arr.length, 'b');
-});
-
-arr.push(3);
