@@ -1,5 +1,6 @@
 import { ShapeFlags } from './vnode';
 import { patchProps } from './patchProps';
+import { mountComponent } from './component';
 import type {
 	TypeVnode,
 	TypeElementVnode,
@@ -7,6 +8,8 @@ import type {
 	TypeComponentVnode,
 	TypeFragmentVnode
 } from './vnode';
+import type { Instance } from './component';
+import type { EffectFn } from '../reactivity';
 
 export interface VElement extends HTMLElement {
 	_vnode?: TypeVnode | null;
@@ -25,7 +28,7 @@ export function render(vnode: TypeVnode | null, container: VElement) {
 	container._vnode = vnode;
 }
 
-function patch(
+export function patch(
 	oldVnode: TypeVnode | null | undefined,
 	newVnode: TypeVnode,
 	container: VElement,
@@ -123,7 +126,12 @@ function processComponent(
 	container: VElement,
 	anchor: VElement | VChildNode | null = null
 ) {
-	// TODO
+	if (!oldVnode) mountComponent(newVnode, container, anchor);
+	else {
+		newVnode.component = oldVnode.component as Instance;
+		newVnode.component.next = newVnode;
+		(newVnode.component.update as EffectFn)();
+	}
 }
 
 function mountElement(

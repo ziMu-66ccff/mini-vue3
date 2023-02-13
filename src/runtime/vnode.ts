@@ -1,5 +1,6 @@
 import { isNumber, isString, isArray, isObject } from '../utils';
 import { isReactive } from '../reactivity';
+import type { Instance } from './component';
 
 export type TypeText = typeof Text;
 export type TypeFragment = typeof Fragment;
@@ -18,7 +19,8 @@ export interface TypeElementVnode extends BaseVnode {
 export interface TypeComponentVnode extends BaseVnode {
 	type: Record<string, any>;
 	children: TypeVnode[] | string | null;
-	component: Record<string, any> | null;
+	component: Instance | null;
+	el: HTMLElement | Text | null;
 }
 export interface TypeFragmentVnode extends BaseVnode {
 	type: TypeFragment;
@@ -97,8 +99,8 @@ export function h(
 	};
 }
 
-export function normalizeVnode(result: any) {
+export function normalizeVnode(result: any): TypeVnode {
 	if (isArray(result)) return h(Fragment, null, result);
-	if (isObject(result)) return result;
+	if (isObject(result)) return result as TypeVnode;
 	return h(Text, null, result.toString());
 }
