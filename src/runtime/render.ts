@@ -117,7 +117,7 @@ function processFragment(
 		container.insertBefore(fragmentStartAnchor, anchor);
 		container.insertBefore(fragmentEndAnchor, anchor);
 	} else {
-		patchChildren(oldVnode, newVnode, container, fragmentStartAnchor);
+		patchChildren(oldVnode, newVnode, container, fragmentEndAnchor);
 	}
 }
 function processComponent(
@@ -128,9 +128,7 @@ function processComponent(
 ) {
 	if (!oldVnode) mountComponent(newVnode, container, anchor);
 	else {
-		newVnode.component = oldVnode.component as Instance;
-		newVnode.component.next = newVnode;
-		(newVnode.component.update as EffectFn)();
+		updateComponent(oldVnode, newVnode);
 	}
 }
 
@@ -318,7 +316,7 @@ function patchkeyChildren(
 					const nextPos = pos + 1;
 					anchor = nextPos < newChildren.length ? newChildren[nextPos].el : null;
 					patch(null, newVnode, container, anchor);
-				} else if (i !== s) {
+				} else if (source[i] !== s) {
 					const pos = i + j;
 					const newVnode = newChildren[pos];
 					const nextPos = pos + 1;
@@ -330,6 +328,12 @@ function patchkeyChildren(
 			}
 		}
 	}
+}
+
+function updateComponent(oldVnode: TypeComponentVnode, newVnode: TypeComponentVnode) {
+	newVnode.component = oldVnode.component as Instance;
+	newVnode.component.next = newVnode;
+	(newVnode.component.update as EffectFn)();
 }
 
 function unmount(vnode: TypeVnode) {

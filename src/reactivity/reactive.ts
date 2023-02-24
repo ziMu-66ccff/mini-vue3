@@ -10,7 +10,7 @@ export function reactive(target: any) {
 
 	const reactiveProxy: Record<string | number | symbol, any> = new Proxy(target, {
 		get(target, key) {
-			if (key === 'isReactive') return true;
+			if (key === '_isReactive') return true;
 			track(target, key);
 			const res = Reflect.get(target, key);
 			return isObject(res) ? reactive(res) : res;
